@@ -1,0 +1,26 @@
+{
+  "name": "mehndi-portfolio",
+  "version": "1.0.0",
+  "description": "Shraddha's Mehndi Art Portfolio Website",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "mehndi",
+    "henna",
+    "art",
+    "portfolio"
+  ],
+  "author": "Shraddha",
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.1.1"
+  }
+}
