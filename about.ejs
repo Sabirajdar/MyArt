@@ -1,0 +1,51 @@
+<%- include('partials/header', { title: 'About', artistName: artistName, isAdmin: typeof isAdmin !== 'undefined' && isAdmin }) %>
+<div style="padding-top:6rem;"></div>
+<section>
+  <div class="about-grid">
+    <div class="about-image-frame fade-in">
+      <div class="about-placeholder">🌿</div>
+      <p style="position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);opacity:0.6;white-space:nowrap;"><img src=""></p>
+    </div>
+    <div class="about-text fade-in-delay">
+      <span class="section-tag">✦ The Artist</span>
+      <h1 class="section-title" style="text-align:left;margin-bottom:1rem;">About Me</h1>
+      <div class="divider" style="margin:1rem 0;"></div>
+      <p>Welcome to my world of Mehndi art — a craft I have loved since childhood, inspired by the rich traditions of my culture and the beauty found in every intricate pattern.</p>
+      <p>Each design I create is drawn entirely by hand, without stencils or templates. I believe Mehndi is more than decoration — it is storytelling, tradition, and a form of meditation expressed through henna.</p>
+      <p>Whether it's a full bridal set, festive patterns for Eid or Diwali, or a modern Arabic-inspired design, every piece is crafted with patience, love, and attention to detail.</p>
+      <div class="stat-row" style="margin-top:2.5rem;">
+        <div class="stat"><div class="stat-number">50+</div><div class="stat-label">Designs</div></div>
+        <div class="stat"><div class="stat-number">3+</div><div class="stat-label">Years</div></div>
+        <div class="stat"><div class="stat-number">100%</div><div class="stat-label">Original Art</div></div>
+      </div>
+      <div style="margin-top:2.5rem;">
+        <a href="/gallery" class="btn">View My Work</a>
+        <a href="/contact" class="btn btn-filled">Book a Design</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="border-top:1px solid rgba(67,232,216,0.1);">
+  <div class="section-header fade-in">
+    <span class="section-tag">✦ Styles</span>
+    <h2 class="section-title">My Specialities</h2>
+    <div class="divider"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem;max-width:900px;margin:0 auto;text-align:center;">
+    <% [
+      { emoji:'👰', name:'Bridal Mehndi' },
+      { emoji:'🌙', name:'Arabic Style' },
+      { emoji:'🌸', name:'Rajasthani' },
+      { emoji:'⭕', name:'Mandala Art' },
+      { emoji:'🎨', name:'Contemporary' },
+      { emoji:'✦',  name:'Mughal Motifs' }
+    ].forEach(s => { %>
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><%= s.emoji %></div>
+        <p class="feature-title"><%= s.name %></p>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<%- include('partials/footer', { artistName: artistName }) %>

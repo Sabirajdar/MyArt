@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | <%= artistName %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">🌿 <%= artistName %></a>
+  <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/gallery">Gallery</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
+    <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+    <li><a href="/upload" class="nav-admin">⬆ Upload</a></li>
+    <li><a href="/admin/messages" class="nav-admin">📬 Messages</a></li>
+    <li><a href="/admin/logout" class="nav-logout">Logout</a></li>
+    <% } %>
+  </ul>
+</nav>

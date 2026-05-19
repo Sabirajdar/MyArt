@@ -1,0 +1,20 @@
+
+<footer>
+  <div class="footer-logo">🌿 <%= artistName %></div>
+  <ul class="footer-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/gallery">Gallery</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+  <p class="footer-copy">© <%= new Date().getFullYear() %> <%= artistName %> · All Designs are Original Artwork</p>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('active')">✕</button>
+  <img id="lightbox-img" src="" alt="Design" />
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

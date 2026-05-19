@@ -1,0 +1,56 @@
+<%- include('partials/header', { title: 'Upload', artistName: 'Shraddha\'s Mehndi' }) %>
+
+<div style="padding-top: 6rem;"></div>
+
+<section>
+  <div class="section-header fade-in">
+    <span class="section-tag">✦ Add to Gallery</span>
+    <h1 class="section-title">Upload Your Designs</h1>
+    <div class="divider"></div>
+    <p class="section-desc">Add new Mehndi art to your portfolio — supports JPG, PNG, WebP</p>
+  </div>
+
+  <div class="upload-box fade-in-delay">
+    <% if (message) { %>
+      <div class="message-box"><%= message %></div>
+    <% } %>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <label class="upload-drop" for="file-input" id="drop-zone">
+        <input type="file" id="file-input" name="designs" multiple accept="image/*" onchange="previewFiles(this)" />
+        <div class="upload-icon">🌿</div>
+        <p>Click to select your Mehndi designs</p>
+        <small>JPG · PNG · WebP · up to 10MB each</small>
+      </label>
+
+      <div id="preview-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:1.5rem;"></div>
+
+      <button type="submit" class="btn btn-filled" style="width:100%; cursor:pointer;">Upload Designs ✦</button>
+    </form>
+
+    <div style="margin-top:1.5rem; text-align:center;">
+      <a href="/gallery" class="btn" style="font-size:0.75rem;">View Gallery</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function previewFiles(input) {
+  const grid = document.getElementById('preview-grid');
+  grid.innerHTML = '';
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;border:1px solid rgba(196,146,42,0.3);';
+      grid.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+  const label = document.querySelector('.upload-drop p');
+  label.textContent = `${input.files.length} file(s) selected`;
+}
+</script>
+
+<%- include('partials/footer', { artistName: 'Shraddha\'s Mehndi' }) %>

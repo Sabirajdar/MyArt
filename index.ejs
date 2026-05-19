@@ -1,0 +1,85 @@
+<%- include('partials/header', { title: 'Home', artistName: artistName, isAdmin: typeof isAdmin !== 'undefined' && isAdmin }) %>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-dots"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">✦ Original Hand-Drawn Art ✦</p>
+    <h1 class="hero-title">
+      <span class="accent-coral">Shraddha's</span><br>
+      <span class="accent-teal">Mehndi Art</span>
+    </h1>
+    <div class="ornament">❧ ✦ ❧</div>
+    <p class="hero-subtitle">Celebrating tradition, beauty &amp; intricate craftsmanship<br>— one design at a time</p>
+    <a href="/gallery" class="btn">View Gallery</a>
+    <a href="/contact" class="btn btn-filled">Book a Design</a>
+  </div>
+</section>
+
+<!-- FEATURED GALLERY -->
+<section style="background:rgba(255,255,255,0.01); border-top:1px solid rgba(67,232,216,0.1);">
+  <div class="section-header fade-in">
+    <span class="section-tag">✦ Portfolio</span>
+    <h2 class="section-title">Featured Designs</h2>
+    <div class="divider"></div>
+    <p class="section-desc">A glimpse into original Mehndi creations — from bridal to festive to contemporary patterns</p>
+  </div>
+
+  <div class="gallery-grid">
+    <% if (images.length === 0) { %>
+      <div class="empty-gallery">
+        <p>🌿 Your beautiful designs will appear here once uploaded</p>
+        <br>
+        <a href="/upload" class="btn" style="font-size:0.75rem;">Upload Your Art</a>
+      </div>
+    <% } else { %>
+      <% images.forEach((img, i) => { %>
+        <div class="gallery-item fade-in" style="animation-delay:<%= i*0.1 %>s;" onclick="openLightbox('<%= img.url %>')">
+          <img src="<%= img.url %>" alt="Mehndi Design <%= i+1 %>" loading="lazy" />
+          <div class="gallery-overlay">
+            <span class="gallery-label">Design No. <%= String(i+1).padStart(2,'0') %></span>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <% if (images.length > 0) { %>
+    <div style="text-align:center;margin-top:3rem;">
+      <a href="/gallery" class="btn">View All Designs</a>
+    </div>
+  <% } %>
+</section>
+
+<!-- STYLE CARDS -->
+<section>
+  <div class="section-header fade-in">
+    <span class="section-tag">✦ The Craft</span>
+    <h2 class="section-title">Art Rooted in Tradition</h2>
+    <div class="divider"></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:950px;margin:0 auto;">
+    <% [
+      { icon:'🌸', title:'Bridal Mehndi', desc:'Intricate full-hand and arm designs for your special day' },
+      { icon:'🌿', title:'Festive Patterns', desc:'Eid, Diwali, Navratri & celebration designs' },
+      { icon:'✦',  title:'Arabic Style',   desc:'Bold flowing motifs with modern elegance' },
+      { icon:'🪷', title:'Custom Designs', desc:'Personalised patterns created just for you' }
+    ].forEach(card => { %>
+      <div class="feature-card fade-in">
+        <div class="feature-icon"><%= card.icon %></div>
+        <h3 class="feature-title"><%= card.title %></h3>
+        <p class="feature-desc"><%= card.desc %></p>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <p style="font-size:0.72rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--coral);margin-bottom:1rem;">Ready for your design?</p>
+  <h2 style="font-family:'Cinzel',serif;font-size:clamp(1.3rem,3vw,2rem);color:var(--cream);margin-bottom:0.5rem;">Let's Create Something Beautiful</h2>
+  <p style="font-family:'Playfair Display',serif;font-style:italic;color:var(--muted);margin-bottom:2rem;">Contact me for bridal, festive or custom bookings</p>
+  <a href="/contact" class="btn btn-filled">Get in Touch</a>
+</section>
+
+<%- include('partials/footer', { artistName: artistName }) %>

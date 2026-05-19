@@ -1,0 +1,139 @@
+<%- include('partials/header', { title: 'Gallery', artistName: artistName }) %>
+
+<div style="padding-top: 6rem;"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Confirm delete modal -->
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-box">
+    <h3>Delete Design?</h3>
+    <p>This will permanently remove the image. This cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn" onclick="closeConfirm()" style="cursor:pointer; padding:0.75rem 1.5rem;">Cancel</button>
+      <button class="btn-danger" onclick="confirmDelete()" id="confirmDeleteBtn">Delete ✕</button>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-header fade-in">
+    <span class="section-tag">✦ Portfolio</span>
+    <h1 class="section-title">The Gallery</h1>
+    <div class="divider"></div>
+    <p class="section-desc">Every design is an original, drawn by hand with henna and devotion</p>
+  </div>
+
+  <% if (typeof isAdmin !== 'undefined' && isAdmin && images.length > 0) { %>
+  <div style="text-align:right; max-width:1200px; margin:0 auto 1.5rem; padding:0 1rem;">
+    <button id="manageBtn" onclick="toggleManageMode()" class="btn admin-manage-btn" style="cursor:pointer; font-size:0.72rem;">
+      ✎ Manage / Delete
+    </button>
+  </div>
+  <% } %>
+
+  <div class="gallery-grid" id="galleryGrid">
+    <% if (images.length === 0) { %>
+      <div class="empty-gallery">
+        <p>🌿 No designs uploaded yet</p>
+        <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+        <br><a href="/upload" class="btn" style="font-size:0.75rem;">Upload Designs</a>
+        <% } %>
+      </div>
+    <% } else { %>
+      <% images.forEach((img, i) => { %>
+        <div class="gallery-item fade-in" id="item-<%= img.filename %>"
+             style="animation-delay: <%= (i % 6) * 0.08 %>s;"
+             onclick="handleItemClick(event, '<%= img.url %>')">
+          <img src="<%= img.url %>" alt="Mehndi Design <%= i+1 %>" loading="lazy" />
+          <div class="gallery-overlay">
+            <span class="gallery-label">Design No. <%= String(i+1).padStart(2,'0') %></span>
+          </div>
+          <% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+          <button class="delete-btn" title="Delete" onclick="askDelete(event, '<%= img.filename %>', 'item-<%= img.filename %>')">✕</button>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<% if (typeof isAdmin !== 'undefined' && isAdmin) { %>
+<div class="manage-bar" id="manageBar" style="display:none;">
+  <p>🗑️ Manage Mode — tap ✕ on any image to delete</p>
+  <button class="btn" onclick="toggleManageMode()" style="cursor:pointer; font-size:0.72rem; white-space:nowrap;">✓ Done</button>
+</div>
+<% } %>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="Design" onclick="event.stopPropagation()" />
+</div>
+
+<script>
+  let manageMode = false;
+  let pendingFile = null;
+  let pendingItemId = null;
+
+  function toggleManageMode() {
+    manageMode = !manageMode;
+    document.body.classList.toggle('manage-mode', manageMode);
+    const bar = document.getElementById('manageBar');
+    if (bar) bar.style.display = manageMode ? 'flex' : 'none';
+    const btn = document.getElementById('manageBtn');
+    if (btn) {
+      btn.textContent = manageMode ? '✓ Done Managing' : '✎ Manage / Delete';
+      btn.style.borderColor = manageMode ? 'var(--coral)' : '';
+      btn.style.color       = manageMode ? 'var(--coral)' : '';
+    }
+  }
+
+  function handleItemClick(e, url) {
+    if (!manageMode) openLightbox(url);
+  }
+
+  function openLightbox(url) {
+    document.getElementById('lightboxImg').src = url;
+    document.getElementById('lightbox').classList.add('active');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+  }
+
+  function askDelete(e, filename, itemId) {
+    e.stopPropagation();
+    pendingFile   = filename;
+    pendingItemId = itemId;
+    document.getElementById('confirmModal').classList.add('active');
+  }
+  function closeConfirm() {
+    document.getElementById('confirmModal').classList.remove('active');
+    pendingFile = pendingItemId = null;
+  }
+
+  async function confirmDelete() {
+    if (!pendingFile) return;
+    const btn = document.getElementById('confirmDeleteBtn');
+    btn.textContent = 'Deleting...'; btn.disabled = true;
+    try {
+      const res  = await fetch(`/gallery/${pendingFile}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        const el = document.getElementById(pendingItemId);
+        if (el) { el.style.transition = 'opacity 0.4s, transform 0.4s'; el.style.opacity = '0'; el.style.transform = 'scale(0.85)'; setTimeout(() => el.remove(), 400); }
+        showToast('🌿 Design deleted');
+      } else { showToast('❌ Could not delete'); }
+    } catch { showToast('❌ Error deleting image'); }
+    closeConfirm(); btn.textContent = 'Delete ✕'; btn.disabled = false;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+
+<%- include('partials/footer', { artistName: artistName }) %>

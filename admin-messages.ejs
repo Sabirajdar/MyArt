@@ -1,0 +1,108 @@
+<%- include('partials/header', { title: 'Messages', artistName: artistName }) %>
+
+<div style="padding-top: 6rem;"></div>
+
+<style>
+  .msg-grid { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 1.2rem; }
+  .msg-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,209,102,0.2);
+    padding: 1.8rem 2rem; position: relative;
+    transition: border-color 0.3s;
+    animation: fadeUp 0.5s ease both;
+  }
+  .msg-card:hover { border-color: rgba(255,209,102,0.45); }
+  .msg-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem; }
+  .msg-name {
+    font-family: 'Cinzel', serif; font-size: 1rem;
+    color: var(--gold); letter-spacing: 0.05em;
+  }
+  .msg-date {
+    font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); opacity: 0.5; white-space: nowrap;
+  }
+  .msg-meta { display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .msg-meta span {
+    font-size: 0.78rem; letter-spacing: 0.05em; color: var(--teal2); opacity: 0.85;
+  }
+  .msg-meta .label { color: var(--muted); opacity: 0.5; margin-right: 0.25rem; }
+  .msg-occasion {
+    display: inline-block; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--coral); border: 1px solid rgba(255,107,107,0.3);
+    padding: 0.2rem 0.7rem; margin-bottom: 0.8rem;
+  }
+  .msg-body {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    color: var(--muted); line-height: 1.85; font-size: 1rem; opacity: 0.85;
+  }
+  .msg-delete {
+    position: absolute; top: 1.2rem; right: 1.2rem;
+    background: none; border: 1px solid rgba(255,77,141,0.3);
+    color: var(--rose); font-size: 0.68rem; letter-spacing: 0.15em;
+    text-transform: uppercase; cursor: pointer; padding: 0.3rem 0.8rem;
+    opacity: 0.5; transition: all 0.2s;
+  }
+  .msg-delete:hover { opacity: 1; background: rgba(255,77,141,0.1); }
+  .empty-msgs {
+    text-align: center; padding: 5rem 2rem;
+    border: 1.5px dashed rgba(255,209,102,0.2); color: var(--muted);
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem;
+  }
+</style>
+
+<section>
+  <div class="section-header fade-in">
+    <span class="section-tag">✦ Admin</span>
+    <h1 class="section-title">Contact Messages</h1>
+    <div class="divider"></div>
+    <p class="section-desc"><%= messages.length %> message<%= messages.length !== 1 ? 's' : '' %> received</p>
+  </div>
+
+  <div class="msg-grid">
+    <% if (messages.length === 0) { %>
+    <div class="empty-msgs">🌿 No messages yet — they'll appear here when visitors contact you.</div>
+    <% } else { %>
+    <% messages.forEach((msg, i) => { %>
+    <div class="msg-card" id="msg-<%= msg.id %>" style="animation-delay:<%= i * 0.05 %>s;">
+      <button class="msg-delete" onclick="deleteMsg(<%= msg.id %>)">✕ Delete</button>
+      <div class="msg-header">
+        <span class="msg-name"><%= msg.name %></span>
+        <span class="msg-date"><%= new Date(msg.date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) %></span>
+      </div>
+      <% if (msg.occasion) { %><span class="msg-occasion"><%= msg.occasion %></span><% } %>
+      <div class="msg-meta">
+        <% if (msg.phone) { %><span><span class="label">📞</span><%= msg.phone %></span><% } %>
+        <% if (msg.email) { %><span><span class="label">✉</span><%= msg.email %></span><% } %>
+      </div>
+      <% if (msg.message) { %>
+      <p class="msg-body">"<%= msg.message %>"</p>
+      <% } %>
+    </div>
+    <% }) %>
+    <% } %>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+async function deleteMsg(id) {
+  if (!confirm('Delete this message?')) return;
+  try {
+    const res = await fetch(`/admin/messages/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) {
+      const el = document.getElementById('msg-' + id);
+      if (el) { el.style.opacity = '0'; el.style.transform = 'translateY(-10px)'; el.style.transition = 'all 0.3s'; setTimeout(() => el.remove(), 300); }
+      showToast('Message deleted');
+    }
+  } catch { showToast('Error deleting message'); }
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+
+<%- include('partials/footer', { artistName: artistName }) %>
